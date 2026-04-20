@@ -1,6 +1,7 @@
 # Phase 1 — Classic ML + GitHub Pages Deployment
 
 **This project was created by the students Moritz Neugebauer, Nico Oltean, Eldin Redzic.**
+**Source:** https://github.com/Neugebauer8/MLOps_Neugebauer_Oltean_Redzic.git
 
 ## 🔗 Live demo
 
