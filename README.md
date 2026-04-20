@@ -1,13 +1,5 @@
 # Phase 1 — Classic ML + GitHub Pages Deployment
 
-## 🔗 Live demo
-
-> **Public URL:** `https://<your-username>.github.io/mlops-fifa-player-value/`
->
-> *(replace the placeholder with the URL of your own repository after you push — see "Deployment" below.)*
-
----
-
 ## What this phase delivers
 
 A browser-only predictor that estimates a professional footballer's market value (in €) from 36 performance statistics. No backend. No server. The model is trained offline with scikit-learn, exported as `model.json`, and the entire prediction loop runs in the user's browser.
@@ -144,3 +136,6 @@ player_stats.csv
                               ▼
                       €-valued prediction
 ```
+
+
+This project was created by the students Moritz Neugebauer, Nico Oltean, Eldin Redzic
