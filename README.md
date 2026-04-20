@@ -1,5 +1,13 @@
 # Phase 1 — Classic ML + GitHub Pages Deployment
 
+**This project was created by the students Moritz Neugebauer, Nico Oltean, Eldin Redzic.**
+
+## 🔗 Live demo
+
+> **Public URL:** `https://neugebauer8.github.io/MLOps_Neugebauer_Oltean_Redzic/`
+
+---
+
 ## What this phase delivers
 
 A browser-only predictor that estimates a professional footballer's market value (in €) from 36 performance statistics. No backend. No server. The model is trained offline with scikit-learn, exported as `model.json`, and the entire prediction loop runs in the user's browser.
@@ -136,6 +144,3 @@ player_stats.csv
                               ▼
                       €-valued prediction
 ```
-
-
-This project was created by the students Moritz Neugebauer, Nico Oltean, Eldin Redzic
