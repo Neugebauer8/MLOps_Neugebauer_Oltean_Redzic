@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pitchprice · Player Value Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ML.js CDN (loaded per project spec; actual inference done with vanilla dot-product below) -->
+  <script src="https://cdn.jsdelivr.net/npm/ml-regression-multivariate-linear@2/lib/multivariate-linear-regression.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark">NOR/</span>
+      <span class="brand-name">Neugebauer_Oltean_Redzic</span>
+    </div>
+    <nav class="site-nav">
+      <span class="nav-item">Phase&nbsp;01</span>
+      <span class="nav-sep">·</span>
+      <span class="nav-item active">Predictor</span>
+      <span class="nav-sep">·</span>
+      <span class="nav-item">ML.js&nbsp;+&nbsp;Scikit-learn</span>
+    </nav>
+  </header>
+
+  <main class="layout">
+
+    <!-- Hero / model status -->
+    <section class="hero">
+      <div class="eyebrow">MLOps Project · Phase 1</div>
+      <h1 class="headline">
+        How much is a <em>footballer</em> worth?
+      </h1>
+      <p class="subheadline">
+        A linear regression, trained on <span class="num">5,682</span> players and deployed
+        <span class="accent">100% client-side</span>. Pull the sliders. Watch the market move.
+      </p>
+
+      <div class="status" id="status">
+        <span class="pulse"></span>
+        <span class="status-text">Loading model…</span>
+      </div>
+    </section>
+
+    <!-- Prediction panel -->
+    <section class="prediction-panel">
+      <div class="prediction-label">Estimated market value</div>
+      <div class="prediction-value" id="prediction-value">€&nbsp;—</div>
+      <div class="prediction-meta" id="prediction-meta">
+        Set inputs below &amp; hit <kbd>Predict</kbd> — or leave auto-update on.
+      </div>
+
+      <div class="prediction-actions">
+        <label class="toggle">
+          <input type="checkbox" id="live-toggle" checked />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Live update</span>
+        </label>
+        <button class="btn-primary" id="predict-btn">
+          <span>Predict</span>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 8h12M10 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="btn-ghost" id="reset-btn">Reset</button>
+      </div>
+    </section>
+
+    <!-- Controls / sliders -->
+    <section class="controls">
+      <div class="tab-bar" role="tablist">
+        <button class="tab active" data-tab="physical">Physical</button>
+        <button class="tab" data-tab="mental">Mental</button>
+        <button class="tab" data-tab="attack">Attacking</button>
+        <button class="tab" data-tab="skill">Skill</button>
+        <button class="tab" data-tab="movement">Movement</button>
+        <button class="tab" data-tab="defense">Defending</button>
+        <button class="tab" data-tab="gk">Goalkeeper</button>
+      </div>
+
+      <div class="slider-grid" id="slider-grid">
+        <!-- sliders injected by predict.js -->
+      </div>
+
+      <div class="preset-row">
+        <span class="preset-label">Try a preset:</span>
+        <button class="chip" data-preset="superstar">Superstar striker</button>
+        <button class="chip" data-preset="midfielder">World-class midfielder</button>
+        <button class="chip" data-preset="defender">Elite defender</button>
+        <button class="chip" data-preset="gk">Top goalkeeper</button>
+        <button class="chip" data-preset="rookie">Young rookie</button>
+      </div>
+    </section>
+
+    <!-- Model info -->
+    <section class="model-info">
+      <h2 class="section-title">Under the hood</h2>
+      <div class="info-grid">
+        <article class="info-card">
+          <div class="info-label">Algorithm</div>
+          <div class="info-value mono" id="info-algo">Linear Regression</div>
+          <p class="info-note">Trained with scikit-learn on log-transformed target, then exported as JSON.</p>
+        </article>
+        <article class="info-card">
+          <div class="info-label">MAE (test)</div>
+          <div class="info-value mono" id="info-mae">— €</div>
+          <p class="info-note">Mean absolute error on held-out 20% of players.</p>
+        </article>
+        <article class="info-card">
+          <div class="info-label">RMSE (test)</div>
+          <div class="info-value mono" id="info-rmse">— €</div>
+          <p class="info-note">Penalises large misses on superstar players more heavily.</p>
+        </article>
+        <article class="info-card">
+          <div class="info-label">R² (log scale)</div>
+          <div class="info-value mono" id="info-r2">—</div>
+          <p class="info-note">Fraction of variance explained in log-space — the honest number.</p>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-cols">
+      <div>
+        <div class="footer-brand">Pitchprice</div>
+        <div class="footer-tagline">A Phase-1 artefact of a three-phase MLOps project.</div>
+      </div>
+      <div class="footer-meta">
+        <div>Dataset · <span class="mono">player_stats.csv</span> · 5,682 rows · 40 features</div>
+        <div>Model · <span class="mono">model.json</span> · vanilla-JS inference, zero server</div>
+        <div>Stack · Scikit-learn → JSON → HTML/CSS/JS + ML.js CDN</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="predict.js"></script>
+</body>
+</html>
